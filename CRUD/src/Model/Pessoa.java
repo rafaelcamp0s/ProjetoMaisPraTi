@@ -1,31 +1,48 @@
 package Model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
+import Control.PessoaControl;
+
+import java.time.LocalDate;
 
 public class Pessoa {
-    private String nome = "";
-    private String telefone = "";
-    private String nascimento = "";
-    private Integer diaNascimento = null;
-    private Integer mesNascimento = null;
-    private Integer anoNascimento = null;
-    private Date cadastro = null;
-    private Date atualizacao = null;
+    protected String nome;
+    protected String telefone;
+    protected Integer diaNascimento;
+    protected Integer mesNascimento;
+    protected Integer anoNascimento;
+    protected LocalDate cadastro;
+    protected LocalDate atualizacao;
+    protected Integer codigo;
+
+    public Pessoa (){
+        this.nome = "";
+        this.telefone = "";
+        this.diaNascimento = null;
+        this.mesNascimento = null;
+        this.anoNascimento = null;
+        this.cadastro = null;
+        this.atualizacao = null;
+        this.codigo = null;
+    }
 
 
-    public static Pessoa cadastra(){
-        Scanner scanner = new Scanner(System.in);
-        Pessoa novaPessoa = new Pessoa();
-        System.out.print("Informe o nome: ");
-        novaPessoa.setNome(scanner.nextLine());
-        System.out.print("Informe o telefone: ");
-        novaPessoa.setTelefone(scanner.nextLine());
-        System.out.println("Informe a data de nascimento no formato dd/mm/aaaa");
-        novaPessoa.setNascimento(scanner.nextLine());
+    public Pessoa(PessoaControl novaPessoa){
+        this.codigo = novaPessoa.getCodigo();
+        this.nome = novaPessoa.getNome();
+        this.telefone = novaPessoa.getTelefone();
+        this.diaNascimento = novaPessoa.getDiaNascimento();
+        this.mesNascimento = novaPessoa.getMesNascimento();
+        this.anoNascimento = novaPessoa.getAnoNascimento();
+        this.cadastro = novaPessoa.getCadastro();
+        this.atualizacao = novaPessoa.getAtualizacao();
+    }
 
-        return novaPessoa;
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
     }
 
     public void setNascimento(String nasc){
@@ -56,19 +73,19 @@ public class Pessoa {
         this.telefone = telefone;
     }
 
-    public Date getCadastro() {
+    public LocalDate getCadastro() {
         return cadastro;
     }
 
-    public void setCadastro(Date cadastro) {
+    public void setCadastro(LocalDate cadastro) {
         this.cadastro = cadastro;
     }
 
-    public Date getAtualizacao() {
+    public LocalDate getAtualizacao() {
         return atualizacao;
     }
 
-    public void setAtualizacao(Date atualizacao) {
+    public void setAtualizacao(LocalDate atualizacao) {
         this.atualizacao = atualizacao;
     }
 
@@ -98,14 +115,14 @@ public class Pessoa {
 
     @Override
     public String toString() {
-        return "Código = "  +
-                "nome = " + nome + '\n' +
-                ", telefone = " + telefone + '\n' +
-                ", nascimento = " + diaNascimento +
-                "/" + mesNascimento +
-                "/" + anoNascimento + '\n' +
-                ", cadastro = " + cadastro + '\n' +
-                ", atualizacao=" + atualizacao + '\n';
+        return  '\n' + "Código = "  + codigo + '\n' +
+                "Nome = " + nome + '\n' +
+                "Telefone = " + telefone + '\n' +
+                "Data de nascimento = " + anoNascimento +
+                "-" + mesNascimento +
+                "-" + diaNascimento + '\n' +
+                "Data do cadastro = " + cadastro + '\n' +
+                "Última atualização = " + atualizacao + '\n';
     }
 }
 
