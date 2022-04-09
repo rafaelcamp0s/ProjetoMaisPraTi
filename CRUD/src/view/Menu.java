@@ -25,6 +25,7 @@ public class Menu {
                 case 1: pessoa.add(Pessoa.cadastra());
                         break;
                 case 2: //pessoa.listaPessoa();
+                        System.out.println(pessoa);
                         break;
                 case 3: //pessoa.atualizaCadastro();
                         break;

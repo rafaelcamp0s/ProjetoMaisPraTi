@@ -7,7 +7,10 @@ import java.util.Scanner;
 public class Pessoa {
     private String nome = "";
     private String telefone = "";
-    private Date nascimento = null;
+    private String nascimento = "";
+    private Integer diaNascimento = null;
+    private Integer mesNascimento = null;
+    private Integer anoNascimento = null;
     private Date cadastro = null;
     private Date atualizacao = null;
 
@@ -19,24 +22,24 @@ public class Pessoa {
         novaPessoa.setNome(scanner.nextLine());
         System.out.print("Informe o telefone: ");
         novaPessoa.setTelefone(scanner.nextLine());
-        do {
-            System.out.print("Informe a data de nascimento no formato DD/MM/AAAA: ");
-            novaPessoa.setNascimento(stringToDate(scanner.nextLine()));
-        }while (novaPessoa.getNascimento().equals(null));//não funcionou
+        System.out.println("Informe a data de nascimento no formato dd/mm/aaaa");
+        novaPessoa.setNascimento(scanner.nextLine());
+
         return novaPessoa;
     }
 
-    public static Date stringToDate(String sDate){
-        try{
-            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
-            return date;
-        } catch (Exception e){
-            System.out.println("Informe a data no formato correto.");
-            return null;
+    public void setNascimento(String nasc){
+        String[] numeros = nasc.split("/");
+        try {
+            this.diaNascimento = Integer.parseInt(numeros[0]);
+            this.mesNascimento = Integer.parseInt(numeros[1]);
+            this.anoNascimento = Integer.parseInt(numeros[2]);
+        }
+        catch(Exception e){
+            System.out.println("Comando inválido, informe novamente.");
         }
 
     }
-
     public String getNome() {
         return nome;
     }
@@ -53,14 +56,6 @@ public class Pessoa {
         this.telefone = telefone;
     }
 
-    public Date getNascimento() {
-        return nascimento;
-    }
-
-    public void setNascimento(Date nascimento) {
-        this.nascimento = nascimento;
-    }
-
     public Date getCadastro() {
         return cadastro;
     }
@@ -75,6 +70,42 @@ public class Pessoa {
 
     public void setAtualizacao(Date atualizacao) {
         this.atualizacao = atualizacao;
+    }
+
+    public Integer getDiaNascimento() {
+        return diaNascimento;
+    }
+
+    public void setDiaNascimento(Integer diaNascimento) {
+        this.diaNascimento = diaNascimento;
+    }
+
+    public Integer getMesNascimento() {
+        return mesNascimento;
+    }
+
+    public void setMesNascimento(Integer mesNascimento) {
+        this.mesNascimento = mesNascimento;
+    }
+
+    public Integer getAnoNascimento() {
+        return anoNascimento;
+    }
+
+    public void setAnoNascimento(Integer anoNascimento) {
+        this.anoNascimento = anoNascimento;
+    }
+
+    @Override
+    public String toString() {
+        return "Código = "  +
+                "nome = " + nome + '\n' +
+                ", telefone = " + telefone + '\n' +
+                ", nascimento = " + diaNascimento +
+                "/" + mesNascimento +
+                "/" + anoNascimento + '\n' +
+                ", cadastro = " + cadastro + '\n' +
+                ", atualizacao=" + atualizacao + '\n';
     }
 }
 
