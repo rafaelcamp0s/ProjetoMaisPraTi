@@ -14,6 +14,8 @@ public class Menu {
     private Scanner scanner;
     private ArrayList<Pessoa> pessoa = new ArrayList<>();
     private ArrayList<Aluno> aluno = new ArrayList<>();
+
+    //Pessoa auxilar (recebe nota também), usada para depois montar o objeto Pessoa ou o objeto Aluno
     private PessoaControl novaPessoaC = new PessoaControl();
 
     public void exibeMenu() {
@@ -25,8 +27,8 @@ public class Menu {
             System.out.println("4 - Apagar um cadastro (primeiro verifique o código do cadastro)");
             System.out.println("0 - Encerrar o programa");
             op = scanner.nextInt();
-            Pessoa novaPessoa;
-            Aluno novoAluno;
+            Pessoa novaPessoa; //para lista de pessoas
+            Aluno novoAluno; //para lista de alunos
 
             switch (op) {
 
@@ -34,12 +36,17 @@ public class Menu {
                         System.out.println("Programa encerrado. Obrigado!" + '\n');
                         break;
                 case 1:
+                        //cod é o código do cadastro, cada cadastro novo incrementa ele.
                         this.cod++;
                         cadastra(this.cod);
                         if (this.novaPessoaC.getNota() < 0.0) {
+                            //se nota < 0 então não é aluno.
+                            //cria nova Pessoa, que recebe os dados de novaPessoaC
                             novaPessoa = new Pessoa(this.novaPessoaC);
                             this.pessoa.add(novaPessoa);
                         } else {
+                            //se não foi Pessoa então é Aluno.
+                            //cria novo Aluno, que recebe os dados de novaPessoaC
                             novoAluno = new Aluno(this.novaPessoaC);
                             this.aluno.add(novoAluno);
                         }
@@ -64,8 +71,11 @@ public class Menu {
     public void atualizaCadastro(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Informe o código do cadastro:");
+
+        //recebe em String e converte para int, direto em int estava ocorrendo erro na leitura.
         String sCodigo = scanner.nextLine();
         int codigo = Integer.valueOf(sCodigo);
+
         int i = encontraAluno(codigo);
         if(i < 0){
             System.out.println("Cadastro não encontrado.");
@@ -73,10 +83,10 @@ public class Menu {
             if(i < 0){
                 System.out.println("Cadastro não encontrado.");
             } else {
-                atualiza(i,0); //Pessoa
+                atualiza(i,0); //j=0 -> Pessoa
             }
         }else{
-            atualiza(i,1); //Aluno
+            atualiza(i,1); //j=1 -> Aluno
         }
     }
 
@@ -87,10 +97,10 @@ public class Menu {
         System.out.println("Cadastro encontrado:");
         if(j == 0) {
             System.out.println(pessoa.get(ind));
-            copiaPessoa = pessoa.get(ind);
+            copiaPessoa = pessoa.get(ind); //copia a Pessoa da Lista
         }else if(j == 1) {
             System.out.println(aluno.get(ind));
-            copiaAluno = aluno.get(ind);
+            copiaAluno = aluno.get(ind); //copia o Aluno da lista
         }else
             System.out.println("Erro! O cadastro não pode ser carregado.");
 
@@ -102,6 +112,9 @@ public class Menu {
             if (j == 1) {
                 System.out.println("6) Nota" + '\n');
             }
+
+            //por erros de leitura foi criado um novo scanner para verificar se era algum conflito.
+            //Nota: remover esse scanner para testar com o criado anteriormente.
             Scanner scanner1 = new Scanner(System.in);
             String sop = scanner1.nextLine();
             int op = Integer.valueOf(sop);
@@ -176,10 +189,15 @@ public class Menu {
             }
         }while (repete);
     }
+
+
+    //Modificar para que o método encontre pelo código sem informar se é aluno ou pessoa
+    //Parecido com o método de atualização
     public void apagar(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Apagar aluno (A) ou pessoa (P)?");
         String opcao = scanner.nextLine();
+
         if (opcao.equalsIgnoreCase("A")) {
             System.out.println("Informe o código do aluno:");
             String sCodigo = scanner.nextLine();
@@ -205,6 +223,7 @@ public class Menu {
         }
     }
 
+    //tentar modificar a exibição juntado as listas em uma só e organizar com collections
     public void exibeCadastros(){
         System.out.println('\n' + "Cadastro de não alunos:");
         System.out.println(pessoa);
@@ -218,19 +237,23 @@ public class Menu {
     public void cadastra(int cod) {
         novaPessoaC.setCodigo(cod);
         Scanner scanner = new Scanner(System.in);
+
         System.out.print("Informe o nome: ");
         novaPessoaC.setNome(scanner.nextLine());
+
         System.out.print("Preencha apenas com números e sem espaços. (Não esqueça o código de área)");
         System.out.println("Informe o número do telefone:");
         novaPessoaC.setTelefone(scanner.nextLine());
+
         System.out.println("Informe a data de nascimento no formato AAAA-MM-DD");
         novaPessoaC.setNascimento(scanner.nextLine());
+
         novaPessoaC.setCadastro(LocalDate.now());
         novaPessoaC.setAtualizacao(LocalDate.now());
+
         System.out.println("Há nota para informar? S - Para incluir nota");
         System.out.println("Qualquer outra tecla para continuar sem nota.");
         novaPessoaC.setNota(novaNota(scanner.nextLine()));
-
     }
 
     public Double novaNota(String op) {
@@ -246,15 +269,15 @@ public class Menu {
                         return valor;
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Utilize vírgula ao invés de ponto.");
+                    System.out.println("Utilize ponto ao invés de vírgula.");
                 }
             }
         }
-        return -1.0;
+        return -1.0;//nota negativa = Não é aluno
     }
 
     public int encontraAluno(int codigo){
-        int indice = -1;
+        int indice = -1; //indice negativo = cadastro não encontrado
         for(Aluno procura: aluno){
             if(procura.getCodigo().equals(codigo)) {
                 System.out.println(aluno.indexOf(procura));

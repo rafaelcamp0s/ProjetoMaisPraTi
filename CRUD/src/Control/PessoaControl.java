@@ -1,6 +1,11 @@
 package Control;
-
 import java.time.LocalDate;
+
+/**
+ * Classe para auxiliar na construção dos objetos Pessoa e Aluno
+ * Após montar PessoaControl, os dados são repassados para Pessoa ou Aluno,
+ * dependendo se há nota válida ou não.
+ */
 
 public class PessoaControl {
     private Integer codigo = null;
