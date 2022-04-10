@@ -5,7 +5,6 @@ import Model.Aluno;
 import Model.Pessoa;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -63,10 +62,14 @@ public class Menu {
     }
 
     public void atualizaCadastro(){
-        int i = encontraAluno();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Informe o código do cadastro:");
+        String sCodigo = scanner.nextLine();
+        int codigo = Integer.valueOf(sCodigo);
+        int i = encontraAluno(codigo);
         if(i < 0){
             System.out.println("Cadastro não encontrado.");
-            i = encontraPessoa();
+            i = encontraPessoa(codigo);
             if(i < 0){
                 System.out.println("Cadastro não encontrado.");
             } else {
@@ -91,96 +94,107 @@ public class Menu {
         }else
             System.out.println("Erro! O cadastro não pode ser carregado.");
 
-
+        Boolean repete = true;
         do {
             System.out.println("O que deseja atualizar?");
             System.out.println("0) Não quero modificar dados" + '\n' + "1) Nome" + '\n' + "2) Telefone" + '\n'
-                    + "3) Ano do nascimento" + '\n' + "4) Mês do nascimento" + '\n' + "5) Dia do nascimento" + '\n');
+                    + "3) Ano do nascimento" + '\n' + "4) Mês do nascimento" + '\n' + "5) Dia do nascimento");
             if (j == 1) {
                 System.out.println("6) Nota" + '\n');
             }
-            Scanner scanner = new Scanner(System.in);
-            int op = scanner.nextInt();
+            Scanner scanner1 = new Scanner(System.in);
+            String sop = scanner1.nextLine();
+            int op = Integer.valueOf(sop);
 
             switch (op) {
                 case 0:
                         System.out.println("Atualização concluída!");
+                        repete = false;
                         break;
                 case 1:
                         System.out.println("Novo nome:");
+                        String nome = scanner1.nextLine();
+
                         if(j==0) {
-                            copiaPessoa.setNome(scanner.nextLine());
+                            copiaPessoa.setNome(nome);
                             copiaPessoa.setAtualizacao(LocalDate.now());
                         }else if(j==1){
-                            copiaAluno.setNome(scanner.nextLine());
+                            System.out.println("j = " + j);
+                            copiaAluno.setNome(nome);
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 case 2:
                         System.out.println("Novo telefone:");
                         if(j==0) {
-                            copiaPessoa.setTelefone(scanner.nextLine());
+                            copiaPessoa.setTelefone(scanner1.nextLine());
                             copiaPessoa.setAtualizacao(LocalDate.now());
                         }else if(j==1){
-                            copiaAluno.setTelefone(scanner.nextLine());
+                            copiaAluno.setTelefone(scanner1.nextLine());
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 case 3:
                         System.out.println("Novo ano:");
                         if(j==0) {
-                            copiaPessoa.setAnoNascimento(scanner.nextInt());
+                            copiaPessoa.setAnoNascimento(scanner1.nextInt());
                             copiaPessoa.setAtualizacao(LocalDate.now());
                         }else if(j==1){
-                            copiaAluno.setAnoNascimento(scanner.nextInt());
+                            copiaAluno.setAnoNascimento(scanner1.nextInt());
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 case 4:
                         System.out.println("Novo mês:");
                         if(j==0) {
-                            copiaPessoa.setMesNascimento(scanner.nextInt());
+                            copiaPessoa.setMesNascimento(scanner1.nextInt());
                             copiaPessoa.setAtualizacao(LocalDate.now());
                         }else if(j==1){
-                            copiaAluno.setMesNascimento(scanner.nextInt());
+                            copiaAluno.setMesNascimento(scanner1.nextInt());
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 case 5:
                         System.out.println("Novo dia:");
                         if(j==0) {
-                            copiaPessoa.setDiaNascimento(scanner.nextInt());
+                            copiaPessoa.setDiaNascimento(scanner1.nextInt());
                             copiaPessoa.setAtualizacao(LocalDate.now());
                         }else if(j==1){
-                            copiaAluno.setDiaNascimento(scanner.nextInt());
+                            copiaAluno.setDiaNascimento(scanner1.nextInt());
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 case 6:
                         System.out.println("Nova nota:");
                         if(j==1){
-                            copiaAluno.setMesNascimento(scanner.nextInt());
+                            copiaAluno.setNota(novaNota("S"));
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 default:
                         System.out.println("Opção não encontrada.");
             }
-        }while (op!=0);
+        }while (repete);
     }
     public void apagar(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Apagar aluno (A) ou pessoa (P)?");
         String opcao = scanner.nextLine();
         if (opcao.equalsIgnoreCase("A")) {
-            int i = encontraAluno();
+            System.out.println("Informe o código do aluno:");
+            String sCodigo = scanner.nextLine();
+            int codigo = Integer.valueOf(sCodigo);
+            int i = encontraAluno(codigo);
             if(i < 0){
                 System.out.println("Cadastro não encontrado.");
             }else{
                 aluno.remove(i);
             }
         } else if (opcao.equalsIgnoreCase("P")){
-            int i = encontraPessoa();
+            System.out.println("Informe o código da pessoa:");
+            String sCodigo = scanner.nextLine();
+            int codigo = Integer.valueOf(sCodigo);
+            int i = encontraPessoa(codigo);
             if(i < 0){
                 System.out.println("Cadastro não encontrado.");
             }else{
@@ -239,10 +253,7 @@ public class Menu {
         return -1.0;
     }
 
-    public int encontraAluno(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Informe o código do aluno:");
-        int codigo = scanner.nextInt();
+    public int encontraAluno(int codigo){
         int indice = -1;
         for(Aluno procura: aluno){
             if(procura.getCodigo().equals(codigo)) {
@@ -253,10 +264,7 @@ public class Menu {
         return indice;
     }
 
-    public int encontraPessoa(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Informe o código da pessoa:");
-        int codigo = scanner.nextInt();
+    public int encontraPessoa(int codigo){
         int indice = -1;
         for(Pessoa procura: pessoa){
             if(procura.getCodigo().equals(codigo)) {
