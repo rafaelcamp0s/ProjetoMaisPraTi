@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-    private int op;
     private int cod = 0;
-    private Scanner scanner;
     private ArrayList<Pessoa> pessoa = new ArrayList<>();
     private ArrayList<Aluno> aluno = new ArrayList<>();
 
@@ -19,8 +17,9 @@ public class Menu {
     private PessoaControl novaPessoaC = new PessoaControl();
 
     public void exibeMenu() {
+        int op;
         do {
-            scanner = new Scanner(System.in);
+            Scanner scanner = new Scanner(System.in);
             System.out.println("1 - Novo cadastro");
             System.out.println("2 - Exibir cadastros");
             System.out.println("3 - Atualizar dados de um cadastro");
@@ -74,11 +73,10 @@ public class Menu {
 
         //recebe em String e converte para int, direto em int estava ocorrendo erro na leitura.
         String sCodigo = scanner.nextLine();
-        int codigo = Integer.valueOf(sCodigo);
+        int codigo = Integer.parseInt(sCodigo);
 
         int i = encontraAluno(codigo);
         if(i < 0){
-            System.out.println("Cadastro não encontrado.");
             i = encontraPessoa(codigo);
             if(i < 0){
                 System.out.println("Cadastro não encontrado.");
@@ -113,10 +111,8 @@ public class Menu {
                 System.out.println("6) Nota" + '\n');
             }
 
-            //por erros de leitura foi criado um novo scanner para verificar se era algum conflito.
-            //Nota: remover esse scanner para testar com o criado anteriormente.
-            Scanner scanner1 = new Scanner(System.in);
-            String sop = scanner1.nextLine();
+            Scanner scanner = new Scanner(System.in);
+            String sop = scanner.nextLine();
             int op = Integer.valueOf(sop);
 
             switch (op) {
@@ -126,7 +122,7 @@ public class Menu {
                         break;
                 case 1:
                         System.out.println("Novo nome:");
-                        String nome = scanner1.nextLine();
+                        String nome = scanner.nextLine();
 
                         if(j==0) {
                             copiaPessoa.setNome(nome);
@@ -140,40 +136,42 @@ public class Menu {
                 case 2:
                         System.out.println("Novo telefone:");
                         if(j==0) {
-                            copiaPessoa.setTelefone(scanner1.nextLine());
+                            copiaPessoa.setTelefone(scanner.nextLine());
                             copiaPessoa.setAtualizacao(LocalDate.now());
                         }else if(j==1){
-                            copiaAluno.setTelefone(scanner1.nextLine());
+                            copiaAluno.setTelefone(scanner.nextLine());
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 case 3:
                         System.out.println("Novo ano:");
                         if(j==0) {
-                            copiaPessoa.setAnoNascimento(scanner1.nextInt());
+                            copiaPessoa.setAnoNascimento(scanner.nextInt());
                             copiaPessoa.setAtualizacao(LocalDate.now());
                         }else if(j==1){
-                            copiaAluno.setAnoNascimento(scanner1.nextInt());
+                            copiaAluno.setAnoNascimento(scanner.nextInt());
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 case 4:
-                        System.out.println("Novo mês:");
-                        if(j==0) {
-                            copiaPessoa.setMesNascimento(scanner1.nextInt());
+                        int mes = novoMes();
+                        if (j == 0) {
+                            copiaPessoa.setMesNascimento(mes);
                             copiaPessoa.setAtualizacao(LocalDate.now());
-                        }else if(j==1){
-                            copiaAluno.setMesNascimento(scanner1.nextInt());
+                        } else if (j == 1) {
+                            copiaAluno.setMesNascimento(mes);
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
                 case 5:
-                        System.out.println("Novo dia:");
+
                         if(j==0) {
-                            copiaPessoa.setDiaNascimento(scanner1.nextInt());
+                            int dia = novoDia(copiaPessoa.getMesNascimento());
+                            copiaPessoa.setDiaNascimento(dia);
                             copiaPessoa.setAtualizacao(LocalDate.now());
                         }else if(j==1){
-                            copiaAluno.setDiaNascimento(scanner1.nextInt());
+                            int dia = novoDia(copiaAluno.getMesNascimento());
+                            copiaAluno.setDiaNascimento(dia);
                             copiaAluno.setAtualizacao(LocalDate.now());
                         }
                         break;
@@ -190,58 +188,75 @@ public class Menu {
         }while (repete);
     }
 
+    public int novoDia(int mes){
+        do {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Novo dia:");
+            String sDia = scanner.nextLine();
+            int dia = Integer.valueOf(sDia);
+            if(dia>31 || dia<1){
+                System.out.println("Dia inválido.");
+            }else if (mes==2 && dia>28) {
+                System.out.println("Ano bissexto não suportado.");
+            }else if((mes==4 || mes==6 || mes==9 || mes==11) && (dia==31)) {
+                System.out.println("Não existe dia 31 neste mês.");
+            } else
+                return dia;
+        }while(true);
+    }
 
-    //Modificar para que o método encontre pelo código sem informar se é aluno ou pessoa
-    //Parecido com o método de atualização
+    public int novoMes(){
+        do {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Novo mês:");
+            String sMes = scanner.nextLine();
+            int mes = Integer.valueOf(sMes);
+            if (mes < 1 || mes > 12) {
+                System.out.println("Mes inválido");
+            }else
+                return mes;
+        }while(true);
+    }
     public void apagar(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Apagar aluno (A) ou pessoa (P)?");
-        String opcao = scanner.nextLine();
+        System.out.println("Informe o código do cadastro:");
 
-        if (opcao.equalsIgnoreCase("A")) {
-            System.out.println("Informe o código do aluno:");
-            String sCodigo = scanner.nextLine();
-            int codigo = Integer.valueOf(sCodigo);
-            int i = encontraAluno(codigo);
+        //recebe em String e converte para int, direto em int estava ocorrendo erro na leitura.
+        String sCodigo = scanner.nextLine();
+        int codigo = Integer.valueOf(sCodigo);
+        int i = encontraAluno(codigo);
+        if(i < 0){
+            i = encontraPessoa(codigo);
             if(i < 0){
                 System.out.println("Cadastro não encontrado.");
-            }else{
-                aluno.remove(i);
+            } else {
+                pessoa.remove(i); //Remove Pessoa
             }
-        } else if (opcao.equalsIgnoreCase("P")){
-            System.out.println("Informe o código da pessoa:");
-            String sCodigo = scanner.nextLine();
-            int codigo = Integer.valueOf(sCodigo);
-            int i = encontraPessoa(codigo);
-            if(i < 0){
-                System.out.println("Cadastro não encontrado.");
-            }else{
-                pessoa.remove(i);
-            }
-        } else{
-            System.out.println("NENHUM CADASTRO APAGADO.");
+        }else{
+            aluno.remove(i); //Remove Aluno
         }
     }
 
-    //tentar modificar a exibição juntado as listas em uma só e organizar com collections
     public void exibeCadastros(){
         System.out.println('\n' + "Cadastro de não alunos:");
         System.out.println(pessoa);
-        System.out.println("");
-        System.out.println("");
         System.out.println("Alunos cadastrados:");
         System.out.println(aluno);
-        System.out.println("");
     }
 
+
+    /**
+     * Método para preencher os dados de um novo cadastro.
+     * @param cod
+     */
     public void cadastra(int cod) {
         novaPessoaC.setCodigo(cod);
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Informe o nome: ");
+        System.out.print("Informe o nome completo: ");
         novaPessoaC.setNome(scanner.nextLine());
 
-        System.out.print("Preencha apenas com números e sem espaços. (Não esqueça o código de área)");
+        System.out.println("Preencha no formato DDD-NÚMERO.");
         System.out.println("Informe o número do telefone:");
         novaPessoaC.setTelefone(scanner.nextLine());
 
@@ -280,7 +295,6 @@ public class Menu {
         int indice = -1; //indice negativo = cadastro não encontrado
         for(Aluno procura: aluno){
             if(procura.getCodigo().equals(codigo)) {
-                System.out.println(aluno.indexOf(procura));
                 indice = aluno.indexOf(procura);
             }
         }
@@ -291,7 +305,6 @@ public class Menu {
         int indice = -1;
         for(Pessoa procura: pessoa){
             if(procura.getCodigo().equals(codigo)) {
-                System.out.println(pessoa.indexOf(procura));
                 indice = pessoa.indexOf(procura);
             }
         }
